@@ -4,8 +4,7 @@ import os
 
 app = Flask(__name__)
 
-#openai.api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = "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"
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route('/', methods=['GET'])
 def home():
