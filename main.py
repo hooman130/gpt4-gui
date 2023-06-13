@@ -1,3 +1,4 @@
+import re
 from flask import Flask, request, jsonify, render_template
 import openai
 import os
@@ -32,5 +33,5 @@ def chat():
 
 if __name__ == '__main__':
 
-    app.run()
+    app.run(debug=True)
     
