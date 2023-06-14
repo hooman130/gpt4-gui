@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template
 import openai
 import os
 from gunicorn.app.base import BaseApplication
+import json
 
 
 class FlaskApplication(BaseApplication):
@@ -44,13 +45,17 @@ def chat():
 
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",  # Assuming GPT-4 is the model you're using
+            model="gpt-4-0613",  # Assuming GPT-4 is the model you're using
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": user_message},
             ],
+            max_tokens=1024,
+            # stream=True,
         )
-        return jsonify({"message": response["choices"][0]["message"]["content"]})
+        # Format the response message
+        response_message = re.sub(r"\n", "<br>", response["choices"][0]["text"])
+        return jsonify({"message": response_message})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -58,7 +63,7 @@ def chat():
 if __name__ == "__main__":
     # app.run(debug=True)
     options = {
-        "bind": "0.0.0.0:8000",
+        "bind": "0.0.0.0:8003",
         "workers": 4,
         "timeout": 120,
         "graceful_timeout": 30,
