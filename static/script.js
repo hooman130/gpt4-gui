@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
     $('#user-input').focus();
 
@@ -15,6 +16,11 @@ $(document).ready(function() {
                 success: function(data) {
                     $('#typing').remove();
                     $('#chatbox').append('<div class="message ai-message"><strong>GPT-4:</strong> ' + data.message + '</div>');
+                    $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+                },
+                error: function(request, status, error) {
+                    $('#typing').remove();
+                    $('#chatbox').append('<div class="message ai-message error"><strong>GPT-4:</strong> Error! Please try again.</div>');
                     $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
                 }
             });

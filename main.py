@@ -1,9 +1,11 @@
 import re
+from bs4 import BeautifulSoup
 from flask import Flask, request, jsonify, render_template
 import openai
 import os
 from gunicorn.app.base import BaseApplication
 import json
+import spacy
 
 
 class FlaskApplication(BaseApplication):
@@ -54,7 +56,9 @@ def chat():
             # stream=True,
         )
         # Format the response message
-        response_message = re.sub(r"\n", "<br>", response["choices"][0]["text"])
+        response_message = response["choices"][0]["message"]["content"]
+        response_message = response_message.replace(". ", ".<br>")
+        
         return jsonify({"message": response_message})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
