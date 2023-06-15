@@ -1,0 +1,8 @@
+gpt4-gui
+ ┣ static
+ ┃ ┣ script.js
+ ┃ ┗ styles.css
+ ┣ templates
+ ┃ ┗ index.html
+ ┣ main.py
+ ┗ requirements.txt

@@ -9,7 +9,7 @@ body {
     overflow-y: auto;
     background-color: #fff;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .message {
@@ -25,5 +25,32 @@ body {
 }
 
 .ai-message {
-    background-color: #f4f4f4;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.formatted-message {
+    display: flex;
+    align-items: center;
+}
+
+.copy-button-small {
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 0.5em;
+    margin-left: 0.5em;
+}
+
+.copy-button-small:hover {
+    background-color: #3e8e41;
+}
+
+.message-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
