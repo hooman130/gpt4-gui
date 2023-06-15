@@ -31,8 +31,14 @@ body {
     margin: 10px 0;
 }
 
-.formatted-message {
+/* .formatted-message {
     display: flex;
+    align-items: center;
+} */
+
+.message-content {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -49,8 +55,3 @@ body {
     background-color: #3e8e41;
 }
 
-.message-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
