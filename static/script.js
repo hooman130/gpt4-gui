@@ -29,7 +29,13 @@ $(document).ready(function () {
     });
 
     $('#user-input').keypress(function (e) {
-        if (e.which == 13) {  // Enter key
+        if (e.which == 13 && !e.shiftKey) {  // Enter key without Shift key
+            e.preventDefault();
+            var userInput = $('#user-input').val();
+            $('#user-input').val(userInput + '\n');
+            if ($('#user-input')[0].scrollHeight > $('#user-input').outerHeight()) {
+                $('#user-input').scrollTop($('#user-input')[0].scrollHeight);
+            }
             $('#send-button').click();
         }
     });

@@ -8,7 +8,7 @@ from gunicorn.app.base import BaseApplication
 import openai
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 class FlaskApplication(BaseApplication):

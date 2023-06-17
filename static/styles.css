@@ -2,6 +2,28 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.col-md-6 {
+    margin: 0 auto;
+}
+
+#user-input {
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    width: 75%;
+    overflow-y: auto;
+    margin-right: 10px;
+    height: 50px;
+    resize: vertical;
+}
+
+#send-button {
+    height: 50px;
+}
+
 #chatbox {
     height: 400px;
     border: 1px solid #919191;
