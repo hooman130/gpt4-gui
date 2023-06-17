@@ -26,6 +26,10 @@ $(document).ready(function () {
                     $('#chatbox').append(formattedMessage);
                 }
             }
+            source.onerror = function (event) {
+                console.error("EventSource failed:", event);
+                // Handle the error...
+            };
         }
     });
 

@@ -7,6 +7,9 @@ import json
 from flask import Flask, request, jsonify, render_template, Response
 from gunicorn.app.base import BaseApplication
 import openai
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class FlaskApplication(BaseApplication):
@@ -86,31 +89,35 @@ def chat():
             response = openai.ChatCompletion.create(
                 model="gpt-4-0613",  # Assuming GPT-4 is the model you're using
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": user_message},
+                    {
+                        "role": "user",
+                        "content": "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ...",
+                    }
                 ],
-                max_tokens=4096,
+                max_tokens=1024,
                 stream=True,
-                temprature=0.4,
+                temprature=0.2,
             )
             # Format the response message
             for message in response:
-                response_message = message["choices"][0]["y"]
+                response_message = message["choices"][0]["delta"]['content']
+                logging.debug(response_message)
                 response_message = response_message.replace(". ", ".<br>")
                 yield f"data: {json.dumps({'message': response_message})}\n\n"
 
         except Exception as error:
+            print(error)
             yield f"data: {json.dumps({'error': str(error)})}\n\n"
 
     return Response(generate(), mimetype="text/event-stream")
 
 
 if __name__ == "__main__":
-    app.run(
-        debug=True,
-    )
+    # app.run(
+    #     debug=True,
+    # )
 
-    """ options = {
+    options = {
         "bind": "0.0.0.0:8001",
         "workers": 4,
         "timeout": 120,
@@ -118,4 +125,5 @@ if __name__ == "__main__":
         "keepalive": 5,
         "debug": True,
     }
-    FlaskApplication(app, options).run() """
+
+    FlaskApplication(app, options).run()
