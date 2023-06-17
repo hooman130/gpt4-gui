@@ -1,9 +1,8 @@
 """
 This module contains a Flask application that uses OpenAI's GPT-4 model to chat with users.
 """
-
 import os
-import json
+import markdown
 from flask import Flask, request, jsonify, render_template, Response
 from gunicorn.app.base import BaseApplication
 import openai
@@ -66,58 +65,35 @@ def home():
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    """
-    Handles chat requests from the user.
-
-    Returns:
-        Response: A Flask Response object containing the chat response.
-    """
-    data = request.get_json()
-    user_message = data.get("message")
-
+    user_message = request.get_json().get("message")
     if not user_message:
         return jsonify({"error": "No message provided"}), 400
 
-    def generate():
-        """
-        Generates the chat response using OpenAI's GPT-4 model.
-
-        Yields:
-            str: A string containing the chat response.
-        """
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4-0613",  # Assuming GPT-4 is the model you're using
-                messages=[
-                    {
-                        "role": "user",
-                        "content": "Count to 100, with a comma between each number and no newlines. E.g., 1, 2, 3, ...",
-                    }
-                ],
-                max_tokens=1024,
-                stream=True,
-                temprature=0.2,
-            )
-            # Format the response message
-            for message in response:
-                response_message = message["choices"][0]["delta"]['content']
-                logging.debug(response_message)
-                response_message = response_message.replace(". ", ".<br>")
-                yield f"data: {json.dumps({'message': response_message})}\n\n"
-
-        except Exception as error:
-            print(error)
-            yield f"data: {json.dumps({'error': str(error)})}\n\n"
-
-    return Response(generate(), mimetype="text/event-stream")
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4-0613",  # Assuming GPT-4 is the model you're using
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": user_message},
+            ],
+            max_tokens=2048,
+            temperature=0.5,
+            # stream=True,
+        )
+        # Format the response message
+        response_message = response["choices"][0]["message"]["content"]
+        response_message = markdown.markdown(response_message)
+        # logging.debug(response_message)
+        # response_message = response_message.replace(". ", ".<br>")
+        return jsonify({"message": response_message})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
-    # app.run(
-    #     debug=True,
-    # )
+    app.run(debug=True, port=5006)
 
-    options = {
+"""     options = {
         "bind": "0.0.0.0:8001",
         "workers": 4,
         "timeout": 120,
@@ -126,4 +102,4 @@ if __name__ == "__main__":
         "debug": True,
     }
 
-    FlaskApplication(app, options).run()
+    FlaskApplication(app, options).run() """

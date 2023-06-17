@@ -8,28 +8,23 @@ $(document).ready(function () {
             $('#chatbox').append('<div class="message user-message"><strong>You:</strong> ' + userInput + '</div>');
             $('#user-input').val('');
             $('#chatbox').append('<div id="typing" class="message ai-message"><strong>GPT-4:</strong> Typing...</div>');
-            var source = new EventSource('/chat', {
+            $.ajax({
+                url: '/chat',
                 method: 'POST',
-                body: JSON.stringify({ message: userInput }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            source.onmessage = function (event) {
-                var data = JSON.parse(event.data);
-                if (data.error) {
+                contentType: 'application/json',
+                data: JSON.stringify({ message: userInput }),
+                success: function (data) {
+                    $('#typing').remove();
+                    var messageHTML = ('<div class="message ai-message"><strong>GPT-4:</strong><br>' + data.message + '</div>');
+                    $('#chatbox')[0].innerHTML += messageHTML
+                    $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+                },
+                error: function (request, status, error) {
                     $('#typing').remove();
                     $('#chatbox').append('<div class="message ai-message error"><strong>GPT-4:</strong> Error! Please try again.</div>');
-                } else {
-                    $('#typing').remove();
-                    const formattedMessage = '<div class="formatted-message"><div class="message-content"><strong>GPT-4:</strong> ' + data.message.replace(/\n/g, "<br>") + '</div><button class="copy-button-small">Copy</button></div>';
-                    $('#chatbox').append(formattedMessage);
+                    $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
                 }
-            }
-            source.onerror = function (event) {
-                console.error("EventSource failed:", event);
-                // Handle the error...
-            };
+            });
         }
     });
 
