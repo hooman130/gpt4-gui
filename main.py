@@ -3,12 +3,15 @@ This module contains a Flask application that uses OpenAI's GPT-4 model to chat 
 """
 import os
 import markdown
-from flask import Flask, request, jsonify, render_template, Response
+from flask import Flask, request, jsonify, render_template
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from flask_bootstrap import Bootstrap
 from gunicorn.app.base import BaseApplication
 import openai
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class FlaskApplication(BaseApplication):
@@ -48,9 +51,14 @@ class FlaskApplication(BaseApplication):
 
 
 app = Flask(__name__)
+Bootstrap(app)
 """
 The Flask application object.
 """
+
+class MessageForm(FlaskForm):
+  message = StringField('Message')
+  submit = SubmitField('Send')
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
